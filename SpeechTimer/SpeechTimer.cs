@@ -13,12 +13,12 @@ namespace SpeechTimer
 {
     public enum FormLocation
     {
-        LEFT_TOP=1,
-        RIGHT_TOP=2,
-        LEFT_BOTTOM=3,
-        RIGHT_BOTTOM=4,
-        CENTER=5,
-        DEFAULT= RIGHT_BOTTOM
+        LEFT_TOP = 1,
+        RIGHT_TOP = 2,
+        LEFT_BOTTOM = 3,
+        RIGHT_BOTTOM = 4,
+        CENTER = 5,
+        DEFAULT = RIGHT_BOTTOM
     }
     public partial class SpeechTimer : Form
     {
@@ -98,7 +98,8 @@ namespace SpeechTimer
             cbTopMost.Checked = topV;
 
             alarmSec = Properties.Settings.Default.AlarmSec;
-            if (alarmSec<= 0){
+            if (alarmSec <= 0)
+            {
                 alarmSec = 60;
             }
             txtAlarmSec.Text = $"{alarmSec}";
@@ -115,14 +116,15 @@ namespace SpeechTimer
         {
             totalSecend--;
             int leftMin = totalSecend / 60;
-            int leftSec=totalSecend% 60;
-            this.BeginInvoke((Action)delegate{ 
+            int leftSec = totalSecend % 60;
+            this.BeginInvoke((Action)delegate
+            {
                 if (totalSecend <= alarmSec)
                 {
-                    lbMinLeft.ForeColor=lbDot.ForeColor = lbSecLeft.ForeColor= Color.Red;
+                    lbMinLeft.ForeColor = lbDot.ForeColor = lbSecLeft.ForeColor = Color.Red;
                 }
-                lbMinLeft.Text= $"{leftMin}".PadLeft(2, '0');
-                lbSecLeft.Text= $"{leftSec}".PadLeft(2, '0');
+                lbMinLeft.Text = $"{leftMin}".PadLeft(2, '0');
+                lbSecLeft.Text = $"{leftSec}".PadLeft(2, '0');
                 if (totalSecend == 0)
                 {
                     btnStop.Enabled = false;
@@ -138,23 +140,28 @@ namespace SpeechTimer
         private void btnStart_Click(object sender, EventArgs e)
         {
             lbMinLeft.ForeColor = lbDot.ForeColor = lbSecLeft.ForeColor = Color.DarkBlue;
-            int time = GetTimeSetted();
-            if (time <= 0){
+            int total = GetTimeSetted();
+            if (total <= 0)
+            {
                 MessageBox.Show("选择或请输入时间", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            totalSecend = time * 60;
+            totalSecend = total;
             timer.Start();
-            lbMinLeft.Text = $"{time}".PadLeft(2,'0');
-            lbSecLeft.Text = "00";
+            int leftMin = totalSecend / 60;
+            int leftSec = totalSecend % 60;
+            lbMinLeft.Text = $"{leftMin}".PadLeft(2, '0');
+            lbSecLeft.Text = $"{leftSec}".PadLeft(2, '0');
             btnStop.Enabled = true;
             btnStart.Enabled = false;
+            rb5Min.Enabled = rb10Min.Enabled = rb15Min.Enabled = rb20Min.Enabled = txtTimeInput.Enabled = false;
             ShowHideOptions(false);
         }
         private void btnStop_Click(object sender, EventArgs e)
         {
             totalSecend = 0;
             timer.Stop();
+            rb5Min.Enabled = rb10Min.Enabled = rb15Min.Enabled = rb20Min.Enabled = txtTimeInput.Enabled = true;
             btnStop.Enabled = false;
             btnStart.Enabled = true;
         }
@@ -162,27 +169,28 @@ namespace SpeechTimer
         {
             if (!string.IsNullOrWhiteSpace(txtTimeInput.Text))
             {
-                if (int.TryParse(txtTimeInput.Text, out int time))
+                if (double.TryParse(txtTimeInput.Text, out double timeInput))
                 {
-                    return time;
+                    return (int)(timeInput * 60);
                 }
-            }else
+            }
+            else
             {
                 if (rb5Min.Checked)
                 {
-                    return 5;
+                    return 5 * 60;
                 }
                 if (rb10Min.Checked)
                 {
-                    return 10;
+                    return 10 * 60;
                 }
                 if (rb15Min.Checked)
                 {
-                    return 15;
+                    return 15 * 60;
                 }
                 if (rb20Min.Checked)
                 {
-                    return 20;
+                    return 20 * 60;
                 }
             }
             return 0;
@@ -221,8 +229,8 @@ namespace SpeechTimer
                     Left = Screen.PrimaryScreen.WorkingArea.Width - Width;
                     break;
                 case FormLocation.CENTER:
-                    Top = (Screen.PrimaryScreen.WorkingArea.Height - Height)/2;
-                    Left = (Screen.PrimaryScreen.WorkingArea.Width - Width)/2;
+                    Top = (Screen.PrimaryScreen.WorkingArea.Height - Height) / 2;
+                    Left = (Screen.PrimaryScreen.WorkingArea.Width - Width) / 2;
                     break;
             }
             Properties.Settings.Default.WindowLocation = (int)location;
@@ -233,8 +241,8 @@ namespace SpeechTimer
         private void rbLocation_CheckedChanged(object sender, EventArgs e)
         {
             var btn = sender as RadioButton;
-            if (btn == null){ return; }
-            FormLocation loc=0;
+            if (btn == null) { return; }
+            FormLocation loc = 0;
             if (btn == rbLT)
             {
                 loc = FormLocation.LEFT_TOP;
@@ -282,7 +290,7 @@ namespace SpeechTimer
         {
             if (!string.IsNullOrWhiteSpace(txtAlarmSec.Text))
             {
-                if (!int.TryParse(txtAlarmSec.Text,out int alarmSet))
+                if (!int.TryParse(txtAlarmSec.Text, out int alarmSet))
                 {
                     MessageBox.Show("预警时间格式不正确,请输入数字", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
