@@ -141,6 +141,7 @@ namespace SpeechTimer
             int time = GetTimeSetted();
             if (time <= 0){
                 MessageBox.Show("选择或请输入时间", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
             totalSecend = time * 60;
             timer.Start();
